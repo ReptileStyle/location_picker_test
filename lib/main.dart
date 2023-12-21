@@ -58,6 +58,43 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   String logs = "";
   bool isMapView = true;
+  //
+  Widget map() {
+    return FlutterLocationPicker(
+        initPosition: LatLong(23, 89),
+        selectLocationButtonStyle: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(Colors.blue),
+        ),
+        selectedLocationButtonTextstyle: const TextStyle(fontSize: 18),
+        selectLocationButtonText: 'Set Current Location',
+        selectLocationButtonLeadingIcon: const Icon(Icons.check),
+        initZoom: 11,
+        minZoomLevel: 5,
+        maxZoomLevel: 16,
+        trackMyPosition: true,
+        onError: (e) => logs += e.toString(),
+        onPicked: (pickedData) {
+          logs += "onPicked\n";
+          logs += pickedData.latLong.latitude.toString() + '\n';
+          logs += pickedData.latLong.longitude.toString() + '\n';
+          logs += pickedData.address + '\n';
+          logs += pickedData.addressData['country'] + '\n';
+          setState(() {
+            isMapView = false;
+          });
+        },
+        onChanged: (pickedData) {
+          logs += "onChanged\n";
+          logs += pickedData.latLong.latitude.toString() + '\n';
+          logs += pickedData.latLong.longitude.toString() + '\n';
+          logs += pickedData.address + '\n';
+          logs += pickedData.addressData.toString() + '\n';
+        });
+  }
+
+  Widget logssad() {
+    return Text("логи: $logs");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,49 +104,53 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-    return Column(
-      children: [
-        GestureDetector(
-          child: Text("Логи"),
-          onTap: () {
-            isMapView = false;
-          },
-        ),
-        GestureDetector(
-          child: Text("Карта"),
-          onTap: () {
-            isMapView = true;
-          },
-        ),
-        if (isMapView)
-          FlutterLocationPicker(
-              initPosition: LatLong(23, 89),
-              selectLocationButtonStyle: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.blue),
-              ),
-              selectedLocationButtonTextstyle: const TextStyle(fontSize: 18),
-              selectLocationButtonText: 'Set Current Location',
-              selectLocationButtonLeadingIcon: const Icon(Icons.check),
-              initZoom: 11,
-              minZoomLevel: 5,
-              maxZoomLevel: 16,
-              trackMyPosition: true,
-              onError: (e) => logs += e.toString(),
-              onPicked: (pickedData) {
-                logs += pickedData.latLong.latitude.toString();
-                logs += pickedData.latLong.longitude.toString();
-                logs += pickedData.address;
-                logs += pickedData.addressData['country'];
-              },
-              onChanged: (pickedData) {
-                logs += pickedData.latLong.latitude.toString();
-                logs += pickedData.latLong.longitude.toString();
-                logs += pickedData.address;
-                logs += pickedData.addressData.toString();
-              }),
-        if (!isMapView)
-          Text("логи: $logs")
-      ],
+    return Scaffold(
+      body: isMapView ? map() : logssad()
     );
+
+    // return Column(
+    //   children: [
+    //     GestureDetector(
+    //       child: Text("Логи"),
+    //       onTap: () {
+    //         isMapView = false;
+    //       },
+    //     ),
+    //     GestureDetector(
+    //       child: Text("Карта"),
+    //       onTap: () {
+    //         isMapView = true;
+    //       },
+    //     ),
+    //     if (isMapView)
+    //       FlutterLocationPicker(
+    //           initPosition: LatLong(23, 89),
+    //           selectLocationButtonStyle: ButtonStyle(
+    //             backgroundColor: MaterialStateProperty.all(Colors.blue),
+    //           ),
+    //           selectedLocationButtonTextstyle: const TextStyle(fontSize: 18),
+    //           selectLocationButtonText: 'Set Current Location',
+    //           selectLocationButtonLeadingIcon: const Icon(Icons.check),
+    //           initZoom: 11,
+    //           minZoomLevel: 5,
+    //           maxZoomLevel: 16,
+    //           trackMyPosition: true,
+    //           onError: (e) => logs += e.toString(),
+    //           onPicked: (pickedData) {
+    //             logs += pickedData.latLong.latitude.toString();
+    //             logs += pickedData.latLong.longitude.toString();
+    //             logs += pickedData.address;
+    //             logs += pickedData.addressData['country'];
+    //           },
+    //           onChanged: (pickedData) {
+    //             logs += pickedData.latLong.latitude.toString();
+    //             logs += pickedData.latLong.longitude.toString();
+    //             logs += pickedData.address;
+    //             logs += pickedData.addressData.toString();
+    //           }),
+    //     if (!isMapView)
+    //       Text("логи: $logs")
+    //   ],
+    // );
   }
 }
